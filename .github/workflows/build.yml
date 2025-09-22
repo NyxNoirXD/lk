@@ -1,30 +1,27 @@
-name: Build workflow
-
-on:
-  push:
-  pull_request:
-  workflow_dispatch:
-
 jobs:
   lk-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout sources
       uses: actions/checkout@v2
 
-    - name: Setup Python 2
-      uses: actions/setup-python@v4
-      with:
-        python-version: '2.7'
+    - name: Install Python 2
+      run: |
+        sudo apt update
+        sudo apt install -y software-properties-common
+        sudo add-apt-repository ppa:deadsnakes/ppa
+        sudo apt update
+        sudo apt install -y python2
+        python2 --version
 
-    - name: Build the bootloader
+    - name: Build bootloader
       run: |
         export PYTHON=$(which python2)
         make X5
 
     - name: Upload bootloader
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v2
       with:
         name: X5_lk-signed.img
         path: /home/runner/work/lk/lk/build-X5/lk-sign.img
