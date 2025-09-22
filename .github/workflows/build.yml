@@ -7,24 +7,23 @@ on:
 
 jobs:
   lk-build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout sources
       uses: actions/checkout@v2
 
-    - name: Install Python 2
+    - name: Download Python 2.7 binary
       run: |
-        sudo apt update
-        sudo apt install -y software-properties-common
-        sudo add-apt-repository ppa:deadsnakes/ppa
-        sudo apt update
-        sudo apt install -y python2
-        python2 --version
+        mkdir -p $HOME/python2
+        curl -L -o python2.tar.xz https://github.com/pyenv/pyenv/releases/download/v2.7.18/python-2.7.18-x86_64-linux.tar.xz
+        tar -xJf python2.tar.xz -C $HOME/python2 --strip-components=1
+        $HOME/python2/bin/python2 --version
 
     - name: Build bootloader
       run: |
-        export PYTHON=$(which python2)
+        export PATH=$HOME/python2/bin:$PATH
+        python --version
         make X5
 
     - name: Upload bootloader
