@@ -1,3 +1,10 @@
+name: Build workflow
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
 jobs:
   lk-build:
     runs-on: ubuntu-22.04
